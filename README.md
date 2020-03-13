@@ -1,6 +1,6 @@
 # mkdocs-versions-menu
 
-This MkDocs plugin generates a versions menu for the mkdocs-material theme.
+This MkDocs plugin generates a versions menu for the [mkdocs-material](https://github.com/squidfunk/mkdocs-material) theme.
 
 It does the following when enabled on a git-back docs repo:
 
