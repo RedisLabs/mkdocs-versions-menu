@@ -1,4 +1,4 @@
-import { versions, latest } from '{{ "." if latest else ".." }}/javascript/versions.mjs'
+import { versions, latest } from '{{ "." if latest else "../../javascript" }}/versions.mjs'
 import { branch } from './branch.mjs'
 const isLatest = {{ 'true' if latest else 'false' }};
 
