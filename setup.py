@@ -14,7 +14,8 @@ setup(
     python_requires='>=2.7',
     install_requires=[
         'mkdocs>=1.0.4',
-        'GitPython>=3.1.0'
+        'GitPython>=3.1.0',
+        'beautifulsoup4>=4.8.2'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -30,6 +31,9 @@ setup(
         'Programming Language :: Python :: 3.8'
     ],
     packages=find_packages(),
+    package_data={
+        '': ['theme/*.*'],
+    },
     entry_points={
         'mkdocs.plugins': [
             'versions-menu = mkdocs_versions_menu.plugin:VersionsMenuPlugin'

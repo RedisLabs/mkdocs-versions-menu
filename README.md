@@ -6,7 +6,7 @@ It does the following when enabled on a git-back docs repo:
 
 * It stores the branch's name
 * It generates a list of all version branches (i.e. origin/x.y)
-* (TODO) It injects the required css and js files
+* It injects the required css and js files
 * For the latest branch, it copies the docs to site/x.y
 * For other branches, it moves the docs to site/x.y
 
@@ -17,15 +17,6 @@ Inspired from: https://github.com/containous/structor
 Install the plugin using pip:
 
 `pip install git+https://github.com/RedisLabs/mkdocs-versions-menu.git`
-
-Assuming your docs are at `docs/`, extend the mkdocs-material theme by:
-
-1. `mkdir -p docs/theme/css`
-1. Copy the contents of [/theme/css/versions-menu.css] to `docs//theme/css/versions-menu.css`
-1. `mkdir -p docs/theme/javascript`
-1. Copy the contents of [/theme/javascript/versions-menu.js] to `docs//theme/javascript/versions-menu.js`
-1. Copy the contents of [/theme/main.html] to `docs/theme/main.html`
-1. Feel free to customizer these
 
 Add the custom theme directory in `mkdocs.yml`:
 ```yaml

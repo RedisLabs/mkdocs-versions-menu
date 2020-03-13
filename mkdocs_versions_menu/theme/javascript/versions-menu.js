@@ -1,5 +1,6 @@
-import { versions, latest } from '/javascript/versions.mjs'
+import { versions, latest } from '{{ "." if latest else ".." }}/javascript/versions.mjs'
 import { branch } from './branch.mjs'
+const isLatest = {{ 'true' if latest else 'false' }};
 
 // Versions submenu for mkdocs-material theme
 // Credit: https://github.com/containous/structor
@@ -63,6 +64,7 @@ function addMaterialMenu(elt, versions) {
     }
 
     a.href = window.location.protocol + "//" + window.location.host + "/";
+    a.href = a.href + window.location.pathname.split('/').slice(1, isLatest ? -1 : -2).join('/');
     if (versions[i].path) {
       a.href = a.href + versions[i].path + "/"
     }
