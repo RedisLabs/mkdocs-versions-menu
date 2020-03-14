@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup as bs
 
 class VersionsMenuPlugin(BasePlugin):
     config_scheme = (
-        ('exclude-regexes', config_options.Type(list, default=list())),
+        ('exclude-regexes', config_options.Type(list, default=['(?!.*)'])),
         ('include-regex', config_options.Type(str, default='([0-9]+)\\.([0-9]+)')),
         ('master-branch', config_options.Type(str, default='master')),
         ('master-text', config_options.Type(str, default=None)),

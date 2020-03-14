@@ -43,7 +43,7 @@ More information about plugins in the [MkDocs documentation][mkdocs-plugins].
 
 ## Config
 
-* `exclude-regexes` - a list of branch regexes to exclude (default: [])
+* `exclude-regexes` - a list of branch regexes to exclude (default: ['(?!.*)'], i.e. nothing)
 * `include-regexes` - a string regex of branches to include, where `\$1` is the major version and `\$2` is the minor (default: ''([0-9]+)\.([0-9]+)'')
 * `master-branch` - a string name of the master branch, if '' then no master (default: 'master')
 * `master-text` - a string text to display for master branch (defaults to capitalized `master-branch`)
