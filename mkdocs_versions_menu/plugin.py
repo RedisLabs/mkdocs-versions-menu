@@ -47,7 +47,7 @@ class VersionsMenuPlugin(BasePlugin):
         repo = Repo()
         assert not repo.bare
 
-        site, javascript, css = self.config["site_dir"], self.config["javascript-path"], self.config["css-path"]
+        site, javascript, css = config["site_dir"], self.config["javascript-path"], self.config["css-path"]
         master = self.config['master-branch'] if len(self.config['master-branch']) > 0 else None
         branch = str(repo.active_branch)
         exclude = re.compile('|'.join(self.config['exclude-regexes']))
