@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mkdocs-versions-menu',
-    version='0.1.1',
+    version='0.1.2',
     description='A MkDocs plugin for generating versions menu',
     long_description='',
     keywords='mkdocs',

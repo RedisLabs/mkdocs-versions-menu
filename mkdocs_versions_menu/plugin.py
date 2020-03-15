@@ -14,33 +14,40 @@ class VersionsMenuPlugin(BasePlugin):
         ('include-regex', config_options.Type(str, default='([0-9]+)\\.([0-9]+)')),
         ('master-branch', config_options.Type(str, default='master')),
         ('master-text', config_options.Type(str, default=None)),
+        ('css-path', config_options.Type(str, default='css')),
+        ('javascript-path', config_options.Type(str, default='javascript')),
     )
 
     @staticmethod
     def _copy_to_site(src, dst):
+        ''' Copies a payload if dst doesn't exist '''
+        if os.path.isfile(dst):
+            return
         s = pkg_resources.resource_filename(__name__, src)
         shutil.copy(s, dst)
+
+    @staticmethod
+    def _customize_js(path, latest):
+        ''' Renders javascript template '''
+        with open(path, 'r') as f:
+            js_template = Template(f.read())
+        with open(path, 'w') as f:
+            f.write(js_template.render(latest=latest))
 
     def on_pre_build(self, config):
         assert config['theme'].name == 'material'
 
     def on_post_page(self, output, page, config):
         soup = bs(output, 'html.parser')
-        soup.head.append(soup.new_tag('link', href='css/versions-menu.css', rel='stylesheet'))
-        soup.head.append(soup.new_tag('script', src='javascript/versions-menu.js', type='module'))
+        soup.head.append(soup.new_tag('link', href=f'{self.config["css-path"]}/versions-menu.css', rel='stylesheet'))
+        soup.head.append(soup.new_tag('script', src=f'{self.config["javascript-path"]}/versions-menu.js', type='module'))
         return soup.prettify()
-
-    @staticmethod
-    def _customize_js(path, latest):
-        with open(path, 'r') as f:
-            js_template = Template(f.read())
-        with open(path, 'w') as f:
-            f.write(js_template.render(latest=latest))
 
     def on_post_build(self, config):
         repo = Repo()
         assert not repo.bare
 
+        site, javascript, css = self.config["site_dir"], self.config["javascript-path"], self.config["css-path"]
         master = self.config['master-branch'] if len(self.config['master-branch']) > 0 else None
         branch = str(repo.active_branch)
         exclude = re.compile('|'.join(self.config['exclude-regexes']))
@@ -48,8 +55,8 @@ class VersionsMenuPlugin(BasePlugin):
         valid_master = False
 
         # Stamp the active branch's version
-        os.makedirs(f'{config["site_dir"]}/javascript', exist_ok=True)
-        with open(f'{config["site_dir"]}/javascript/branch.mjs', 'w') as f:
+        os.makedirs(f'{site}/{javascript}', exist_ok=True)
+        with open(f'{site}/{javascript}/branch.mjs', 'w') as f:
             f.write(f'export const branch = "{ branch }";\n')
 
         # Collect versions
@@ -67,7 +74,7 @@ class VersionsMenuPlugin(BasePlugin):
             assert valid_master
 
         # Generate versions JS module
-        with open(f'{config["site_dir"]}/javascript/versions.mjs', 'w') as f:
+        with open(f'{site}/{javascript}/versions.mjs', 'w') as f:
             f.write(f'export const latest = "{ latest }";\n')
             f.write('export const versions = [\n')
             if master:
@@ -78,23 +85,19 @@ class VersionsMenuPlugin(BasePlugin):
             f.write('];\n')
 
         # Inject payload script and style
-        os.makedirs(f'{config["site_dir"]}/css', exist_ok=True)
-        payload = [
-            'css/versions-menu.css',
-            'javascript/versions-menu.js',
-        ]
-        for p in payload:
-            self._copy_to_site(f'theme/{p}', f'{config["site_dir"]}/{p}')
+        os.makedirs(f'{site}/{css}', exist_ok=True)
+        self._copy_to_site(f'theme/css/versions-menu.css', f'{site_dir}/{css}/versions-menus.css')
+        self._copy_to_site(f'theme/javascript/versions-menu.js', f'{site}/{javascript}/versions-menu.js')
 
         # Make directory structure
         if branch == latest:
             # Latest is copied
-            shutil.copytree(config["site_dir"], f'{config["site_dir"]}/{branch}')
-            self._customize_js(f'{config["site_dir"]}/javascript/versions-menu.js', True)
+            shutil.copytree(site, f'{site}/{branch}')
+            self._customize_js(f'{site}/{javascript}/versions-menu.js', True)
         else:
             # Others are moved
-            files = os.listdir(config["site_dir"])
-            os.mkdir(os.path.join(config["site_dir"], branch))
+            files = os.listdir(site)
+            os.mkdir(os.path.join(site, branch))
             for f in files:
-                shutil.move(os.path.join(config["site_dir"], f), f'{config["site_dir"]}/{branch}/{f}')
-        self._customize_js(f'{config["site_dir"]}/{branch}/javascript/versions-menu.js', False)
+                shutil.move(os.path.join(site, f), f'{site}/{branch}/{f}')
+        self._customize_js(f'{site}/{branch}/{javascript}/versions-menu.js', False)
