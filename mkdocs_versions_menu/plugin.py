@@ -86,7 +86,7 @@ class VersionsMenuPlugin(BasePlugin):
 
         # Inject payload script and style
         os.makedirs(f'{site}/{css}', exist_ok=True)
-        self._copy_to_site(f'theme/css/versions-menu.css', f'{site}/{css}/versions-menus.css')
+        self._copy_to_site(f'theme/css/versions-menu.css', f'{site}/{css}/versions-menu.css')
         self._copy_to_site(f'theme/javascript/versions-menu.js', f'{site}/{javascript}/versions-menu.js')
 
         # Make directory structure
