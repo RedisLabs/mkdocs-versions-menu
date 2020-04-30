@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mkdocs-versions-menu',
-    version='0.1.6',
+    version='0.1.7',
     description='A MkDocs plugin for generating versions menu',
     long_description='',
     keywords='mkdocs',
@@ -24,8 +24,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'
         'Programming Language :: Python :: 3.8'

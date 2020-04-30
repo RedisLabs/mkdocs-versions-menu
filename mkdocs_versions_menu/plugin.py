@@ -65,7 +65,7 @@ class VersionsMenuPlugin(BasePlugin):
 
         # Look for version tags
         if require_tag:
-            all_tags = repo.git.tag(merged=True).split('\n')
+            all_tags = repo.git.tag().split('\n')
             tags = set()
             for tag in all_tags:
                 t = tagre.search(tag)
