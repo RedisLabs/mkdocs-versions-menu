@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mkdocs-versions-menu',
-    version='0.1.5',
+    version='0.1.6',
     description='A MkDocs plugin for generating versions menu',
     long_description='',
     keywords='mkdocs',
@@ -11,7 +11,7 @@ setup(
     author='RedisLabs',
     author_email='oss@redislabs.com',
     license='MIT',
-    python_requires='>=2.7',
+    python_requires='>=3.6',
     install_requires=[
         'mkdocs>=1.0.4',
         'GitPython>=3.1.0',

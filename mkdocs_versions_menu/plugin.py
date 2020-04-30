@@ -12,6 +12,8 @@ class VersionsMenuPlugin(BasePlugin):
     config_scheme = (
         ('exclude-regexes', config_options.Type(list, default=['(?!.*)'])),
         ('include-regex', config_options.Type(str, default='([0-9]+)\\.([0-9]+)')),
+        ('require-release-tag', config_options.Type(bool, default=True)),
+        ('release-tag-regex', config_options.Type(str, default='v([0-9]+)\\.([0-9]+)\\.([0-9]+)')),
         ('master-branch', config_options.Type(str, default='master')),
         ('master-text', config_options.Type(str, default=None)),
         ('css-path', config_options.Type(str, default='css')),
@@ -49,15 +51,26 @@ class VersionsMenuPlugin(BasePlugin):
 
         site, javascript, css = config["site_dir"], self.config["javascript-path"], self.config["css-path"]
         master = self.config['master-branch'] if len(self.config['master-branch']) > 0 else None
-        branch = str(repo.active_branch)
         exclude = re.compile('|'.join(self.config['exclude-regexes']))
         include = re.compile(f'^origin/({self.config["include-regex"]})$')
+        require_tag = self.config['require-release-tag']
+        tagre = re.compile(f'^{self.config["release-tag-regex"]}$')
+        branch = str(repo.active_branch)
         valid_master = False
 
         # Stamp the active branch's version
         os.makedirs(f'{site}/{javascript}', exist_ok=True)
         with open(f'{site}/{javascript}/branch.mjs', 'w') as f:
             f.write(f'export const branch = "{ branch }";\n')
+
+        # Look for version tags
+        if require_tag:
+            all_tags = repo.git.tag(merged=True).split('\n')
+            tags = set()
+            for tag in all_tags:
+                t = tagre.search(tag)
+                if t:
+                    tags.add(f'{t[1]}.{t[2]}')
 
         # Collect versions
         versions = []
@@ -67,11 +80,16 @@ class VersionsMenuPlugin(BasePlugin):
             else:
                 m = include.search(r)
                 if m and not exclude.search(m[1]):
-                    versions.append((int(m[2]), int(m[3]), m[1]))
-        versions.sort(reverse=True)
-        latest = versions[0][2]
+                    if not require_tag or m[1] in tags:
+                        versions.append((int(m[2]), int(m[3]), m[1]))
         if master:
             assert valid_master
+
+        if len(versions) > 0:
+            versions.sort(reverse=True)
+            latest = versions[0][2]
+        else:
+            latest = master
 
         # Generate versions JS module
         with open(f'{site}/{javascript}/versions.mjs', 'w') as f:

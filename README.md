@@ -30,6 +30,8 @@ plugins:
       exclude-regexes:
         - '(?!.*)'
       include-regex: '([0-9]+)\.([0-9]+)'
+      require-release-tag: yes
+      release-tag-regex: v([0-9]+)\\.([0-9]+)\\.([0-9]+)'
       master-branch: 'master'
       master-text: 'Master'
       css-path: 'css'
@@ -44,6 +46,8 @@ More information about plugins in the [MkDocs documentation](https://www.mkdocs.
 
 * `exclude-regexes` - a list of branch regexes to exclude (default: ['(?!.*)'], i.e. nothing)
 * `include-regexes` - a string regex of branches to include, where `\$1` is the major version and `\$2` is the minor (default: '([0-9]+)\.([0-9]+)')
+* `require-release-tag` - a boolean controlling whether included branches should have at least one tag (default: True)
+* `release-tag-regex` - a string regex for release tags (default: 'v([0-9]+)\\.([0-9]+)\\.([0-9]+)')
 * `master-branch` - a string name of the master branch, if set to '' then no master (default: 'master')
 * `master-text` - a string text to display for master branch (defaults to capitalized form of `master-branch`)
 * `css-path` - the site's css relative path (default: 'css')
